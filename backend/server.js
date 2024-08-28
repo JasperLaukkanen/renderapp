@@ -29,6 +29,17 @@ const userSchema = new mongoose.Schema({
 const User = mongoose.model('User', userSchema);
 
 
+app.post('/register', async (req, res) => {
+  try {
+    const newUser = new User(req.body);
+    await newUser.save();
+    res.status(201).send('Käyttäjä rekisteröityi onnistuneesti.');
+  } catch (err) {
+    res.status(400).send('Virhe rekisteröinnissä: ' + err.message);
+  }
+});
+
+
 // CRUD-toiminnot:
 
 app.get('/api/users', async (req, res) => {

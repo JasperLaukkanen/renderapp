@@ -69,7 +69,7 @@ function UserManagement() {
                 </label>
                 <br />
                 <label>
-Bio:
+
                     {/* Tekstialue, joka päivittää bio-tilan */}
                     <textarea
                         name="bio"
