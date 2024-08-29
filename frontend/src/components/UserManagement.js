@@ -1,4 +1,3 @@
-// src/components/UserManagement.js
 import React, { useState, useEffect } from 'react';
 
 // UserManagement-komponentti hoitaa käyttäjien hallinnan ja CRUD-toiminnot
@@ -8,13 +7,12 @@ function UserManagement() {
     const [newUser, setNewUser] = useState({ username: '', bio: '' });
     const [editingUser, setEditingUser] = useState(null);
 
-// useEffect hook suorittaa koodin, kun komponentti ladataan
+    // useEffect hook suorittaa koodin, kun komponentti ladataan
     useEffect(() => {
-        // Alustava käyttäjädata (voisi olla API-kutsu lopullisessa sovelluksessa)
-        setUsers([
-            { username: 'Jouni React', bio: 'Tämä on Jounin henkilökohtainen kuvaus (bio).'}, 
-            { username: 'Jaana React', bio: 'Tämä on Jaanan henkilökohtainen kuvaus (bio).' }
-        ]);
+        // Hakee käyttäjät backendistä
+        fetch('http://localhost:5000/api/users')
+            .then(response => response.json())
+            .then(data => setUsers(data));
     }, []);
 
     // handleChange-funktio päivittää tilan, kun käyttäjä muuttaa lomakkeen kenttää
@@ -24,22 +22,43 @@ function UserManagement() {
             [e.target.name]: e.target.value
         });
     };
+
     // handleSubmit-funktio käsittelee lomakkeen lähetyksen
     const handleSubmit = (e) => {
         e.preventDefault();
         if (editingUser) {
-            // Jos ollaan muokkaustilassa, päivitetään olemassa oleva käyttäjä 
-            setUsers(users.map(user => (user.username === editingUser.username ? newUser : user)));
-            setEditingUser(null);
+            // Päivittää käyttäjän backendissä
+            fetch(`http://localhost:5000/api/users/${editingUser.username}`, {
+                method: 'PUT',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            })
+                .then(response => response.json())
+                .then(updatedUser => {
+                    setUsers(users.map(user => (user.username === updatedUser.username ? updatedUser : user)));
+                    setEditingUser(null);
+                    setNewUser({ username: '', bio: '' });
+                });
         } else {
-            // Muussa tapauksessa lisätään uusi käyttäjä
-            setUsers([...users, newUser]);
+            // Lisää uuden käyttäjän backendissä
+            fetch('http://localhost:5000/api/users', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(newUser)
+            })
+                .then(response => response.json())
+                .then(user => {
+                    setUsers([...users, user]);
+                    setNewUser({ username: '', bio: '' });
+                });
         }
-        // Tyhjennetään lomake
-        setNewUser({ username: '', bio: '' });
     };
 
-// handleEdit-funktio asettaa käyttäjän muokkaustilaan
+    // handleEdit-funktio asettaa käyttäjän muokkaustilaan
     const handleEdit = (user) => {
         setEditingUser(user);
         setNewUser({ username: user.username, bio: user.bio });
@@ -47,7 +66,10 @@ function UserManagement() {
 
     // handleDelete-funktio poistaa käyttäjän listasta
     const handleDelete = (username) => {
-        setUsers(users.filter(user => user.username !== username));
+        fetch(`http://localhost:5000/api/users/${username}`, {
+            method: 'DELETE'
+        })
+            .then(() => setUsers(users.filter(user => user.username !== username)));
     };
 
     // Komponentin renderöinti
@@ -56,7 +78,7 @@ function UserManagement() {
             <h1>Käyttäjien hallinta</h1>
             {/* Lomakkeen lähetys kutsuu handleSubmit-funktiota */}
             <form onSubmit={handleSubmit}>
-            <label>
+                <label>
                     Käyttäjänimi:
                     {/* Tekstikenttä, joka päivittää username-tilan ja estää muokkaamisen päivitystilan aikana */}
                     <input
@@ -69,7 +91,7 @@ function UserManagement() {
                 </label>
                 <br />
                 <label>
-
+                    Bio:
                     {/* Tekstialue, joka päivittää bio-tilan */}
                     <textarea
                         name="bio"
