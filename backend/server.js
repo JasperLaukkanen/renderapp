@@ -62,28 +62,36 @@ app.post('/api/users', async (req, res) => {
   }
 });
 
+// Käyttäjän päivittäminen
+app.put('/api/users/:username', async (req, res) => {
+  const { username } = req.params;
+  const updatedUser = await User.findOneAndUpdate({ username }, req.body, { new: true });
+  res.json(updatedUser);
+});
 
-app.put('/api/users/:id', async (req, res) => { //mieti toimiiko :id tällä rivillä
-  try {
-    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, { new: true });
-    res.json(updatedUser);
-  } catch (error) {
-    res.status(400).json({ message: 'Virhe päivittäessä käyttäjää' });
+// Käyttäjän poistaminen
+app.delete('/api/users/:username', async (req, res) => {
+  const { username } = req.params;
+  await User.findOneAndDelete({ username });
+  res.status(204).send();
+});
+
+app.post('/api/login', async (req, res) => {
+  const { username, password } = req.body;
+  
+  // Etsi käyttäjä tietokannasta
+  const user = await User.findOne({ username });
+
+  // Tarkista, että käyttäjä löytyy ja salasana on oikein
+  if (user && user.password === password) {
+      // Voit myös käyttää salasanan hashauksen tarkistusta, jos se on käytössä
+      res.status(200).json({ message: 'Kirjautuminen onnistui' });
+  } else {
+      res.status(401).json({ message: 'Virheellinen käyttäjänimi tai salasana' });
   }
 });
 
-
-app.delete('/api/users/:id', async (req, res) => { //mieti toimiiko :id tällä rivillä
-  try {
-    await User.findByIdAndDelete(req.params.id);
-    res.json({ message: 'Käyttäjä poistettu' });
-  } catch (error) {
-    res.status(500).json({ message: 'virhe käyttäjää poistaessa' });
-  }
-});
-
-//tähän väliin ehkä lisättävä kirjautumista varten post-toiminto
+// Palvelimen käynnistys
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-  console.log(`Palvelin käynnissä portissa ${PORT}`);
-});
+app.listen(PORT, () => console.log(`Palvelin toimii portissa ${PORT}`));
+
