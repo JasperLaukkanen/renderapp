@@ -1,57 +1,62 @@
 import React, { useState } from 'react';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom'; // Routerin käyttö navigointiin
 
-// Login-komponentti käsittelee käyttäjän kirjautumisen
 function Login() {
-    // useState hook luo tilan käyttäjän kirjautumistiedoille: käyttäjänimi ja salasana
     const [credentials, setCredentials] = useState({ username: '', password: '' });
+    const [error, setError] = useState('');
+    const navigate = useNavigate(); // Navigaation hook
 
-    // handleChange-funktio päivittää tilan, kun käyttäjä muuttaa lomakkeen kenttää
     const handleChange = (e) => {
-        // Päivitetään vastaava kenttä tilassa
         setCredentials({
             ...credentials,
             [e.target.name]: e.target.value
         });
     };
 
-    // handleSubmit-funktio käsittelee lomakkeen lähetyksen
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
-        // Tulostetaan kirjautuneen käyttäjän tiedot konsoliin
-        console.log('Käyttäjä kirjautunut sisään:', credentials);
-        // Näytetään ilmoitus onnistuneesta kirjautumisesta
-        alert('Kirjautuminen onnistui');
+        setError('');
+
+        try {
+            const response = await axios.post('http://localhost:5000/api/login', credentials);
+            navigate('/Palvelu'); 
+        
+        } catch (err) {
+            const message = err.response?.data?.message || 'Yhteys epäonnistui';
+            setError('Virhe kirjautumisessa: ' + message);
+        }
     };
 
-    // Lomakkeen renderöinti
     return (
         <div>
             <h2>Kirjaudu sisään</h2>
-            {}
+
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             <form onSubmit={handleSubmit}>
                 <label>
                     Käyttäjänimi:
-                    {}
                     <input
                         type="text"
                         name="username"
                         value={credentials.username}
                         onChange={handleChange}
+                        required
                     />
                 </label>
                 <br />
                 <label>
                     Salasana:
-                    {}
                     <input
                         type="password"
                         name="password"
                         value={credentials.password}
                         onChange={handleChange}
+                        required
                     />
                 </label>
                 <br />
-                {}
                 <button type="submit">Kirjaudu</button>
             </form>
         </div>
@@ -59,4 +64,3 @@ function Login() {
 }
 
 export default Login;
-

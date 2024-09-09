@@ -4,7 +4,7 @@ import Register from './components/Register';
 import Login from './components/Login';
 import UserManagement from './components/UserManagement'; 
 import './App.css';
-
+import Palvelu  from './components/Palvelu';
 
 function App() {
     return (
@@ -40,6 +40,7 @@ function App() {
                     <Route path="/rekisterointi" element={<Register />} />
                     <Route path="/kirjautuminen" element={<Login />} />
                     <Route path="/kayttajat" element={<UserManagement />} />
+                    <Route path="/palvelu" element={<Palvelu />} /> 
                 </Routes>
             </div>
         </Router>
