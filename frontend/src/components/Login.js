@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom'; // Routerin käyttö navigointii
 function Login() {
     const [credentials, setCredentials] = useState({ username: '', password: '' });
     const [error, setError] = useState('');
-    const navigate = useNavigate(); // Navigaation hook
+    const navigate = useNavigate(); 
 
     const handleChange = (e) => {
         setCredentials({
