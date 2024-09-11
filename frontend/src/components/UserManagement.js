@@ -28,7 +28,7 @@ function UserManagement() {
         e.preventDefault();
         if (editingUser) {
             // Päivittää käyttäjän backendissä
-            fetch(`http://localhost:5000/api/users/${editingUser.username}`, {
+            fetch(`https://renderitestaus.onrender.com/api/users/${editingUser.username}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json'
