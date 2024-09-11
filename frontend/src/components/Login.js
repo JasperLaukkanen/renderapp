@@ -20,7 +20,7 @@ function Login() {
 
         try {
             const response = await axios.post('https://renderitestaus.onrender.com/api/login', credentials);
-            navigate('/Palvelu'); 
+            navigate('/palvelu'); 
         
         } catch (err) {
             const message = err.response?.data?.message || 'Yhteys epäonnistui';
