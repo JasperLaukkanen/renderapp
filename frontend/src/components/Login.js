@@ -19,7 +19,7 @@ function Login() {
         setError('');
 
         try {
-            const response = await axios.post('http://localhost:5000/api/login', credentials);
+            const response = await axios.post('https://renderitestaus.onrender.com/api/login', credentials);
             navigate('/Palvelu'); 
         
         } catch (err) {
