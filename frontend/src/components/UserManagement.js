@@ -10,7 +10,7 @@ function UserManagement() {
     // useEffect hook suorittaa koodin, kun komponentti ladataan
     useEffect(() => {
         // Hakee käyttäjät backendistä
-        fetch('http://localhost:5000/api/users')
+        fetch('https://renderitestaus.onrender.com/api/users')
             .then(response => response.json())
             .then(data => setUsers(data));
     }, []);
@@ -43,7 +43,7 @@ function UserManagement() {
                 });
         } else {
             // Lisää uuden käyttäjän backendissä
-            fetch('http://localhost:5000/api/users', {
+            fetch('https://renderitestaus.onrender.com/api/users', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json'
@@ -66,7 +66,7 @@ function UserManagement() {
 
     // handleDelete-funktio poistaa käyttäjän listasta
     const handleDelete = (username) => {
-        fetch(`http://localhost:5000/api/users/${username}`, {
+        fetch(`https://renderitestaus.onrender.com/api/users/${username}`, {
             method: 'DELETE'
         })
             .then(() => setUsers(users.filter(user => user.username !== username)));
