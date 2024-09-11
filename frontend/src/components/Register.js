@@ -28,7 +28,7 @@ function Register() {
 
         try {
             // Lähetetään tiedot backendille
-            const response = await axios.post('http://localhost:5000/register', user);
+            const response = await axios.post('https://renderitestaus.onrender.com/register', user);
             setSuccess(response.data);
             setUser({ username: '', password: '', bio: '' });
         } catch (err) {
